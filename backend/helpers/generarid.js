@@ -1,5 +1,5 @@
 const generarId = () => {
-  return Math.random().toString(36).substring(2, 9);
+  return Date.now().toString(32) + Math.random().toString(32).substring(2);
 };
 
 export default generarId;
