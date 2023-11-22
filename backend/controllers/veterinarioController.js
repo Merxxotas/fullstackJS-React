@@ -1,12 +1,14 @@
+import generarJWT from "../helpers/generarJWT.js";
+import generarId from "../helpers/generarid.js";
 import Veterinario from "../models/Veterinario.js";
 const registrar = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { email } = req.body;
   //prevenir si un usuario ya se encuentra duplicado
   const existeUsuario = await Veterinario.findOne({ email });
   if (existeUsuario) {
-    const error = new Error("El usuario ya existe");
-    return res.status(400).json({ msg: error.message });
+    const error = new Error("El usuario ya existe 🥱");
+    return res.status(401).json({ msg: error.message });
   }
   try {
     const veterinario = new Veterinario(req.body);
@@ -18,14 +20,17 @@ const registrar = async (req, res) => {
   }
 };
 const perfil = (req, res) => {
-  res.json({ msg: "mostrando perfil..." });
+  // console.log(req.veterinario);
+  // res.json({ msg: "mostrando perfil... 🖨" });
+  const { veterinario } = req;
+  res.json({ perfil: veterinario });
 };
 
 const confirmar = async (req, res) => {
-  console.log(req.params.token);
+  // console.log(req.params.token);
   const { token } = req.params;
   const usuarioConfirmar = await Veterinario.findOne({ token });
-  console.log(usuarioConfirmar);
+  // console.log(usuarioConfirmar);
   if (!usuarioConfirmar) {
     const error = new Error("USUARIO no válido");
     return res.status(404).json({ msg: error.message });
@@ -41,7 +46,7 @@ const confirmar = async (req, res) => {
   }
 };
 
-const autenticar = async(req, res) => {
+const autenticar = async (req, res) => {
   // console.log(req.body);
   const { email, password } = req.body;
   //prevenir si un usuario ya se encuentra duplicado
@@ -58,15 +63,76 @@ const autenticar = async(req, res) => {
   }
 
   //comprobar password
-  if(await usuario.comprobarPassword(password)){
-    res.json({msg: "Usuario autenticado correctamente"});
-    console.log("password correcto");
-  }else{
+  if (await usuario.comprobarPassword(password)) {
+    // console.log("password correcto");
+    //generar JWT
+    res.json({ token: generarJWT(usuario.id) });
+    // res.json({msg: "Usuario autenticado correctamente"});
+  } else {
+    // console.log("password incorrecto");
     const error = new Error("Password incorrecto");
     return res.status(403).json({ msg: error.message });
-    console.log("password incorrecto");
   }
 };
 
-export { autenticar, confirmar, perfil, registrar };
+const olvidePassword = async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+  // console.log("asd");
+  const existeVeterinario = await Veterinario.findOne({ email });
+  // console.log(existeVeterinario);
+  if (!existeVeterinario) {
+    const error = new Error("El usuario no existe");
+    return res.status(400).json({ msg: error.message });
+  }
+  try {
+    existeVeterinario.token = generarId();
+    await existeVeterinario.save();
+    res.json({
+      msg: "Se ha enviado un correo para reestablecer el password 📧",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+const comprobarToken = async (req, res) => {
+  const { token } = req.params;
+  // console.log(token);
+  const tokenValido = await Veterinario.findOne({ token });
+  if (tokenValido) {
+    res.json({ msg: "Token válido y el usuario existe ✅" });
+  } else {
+    const error = new Error("Token no válido");
+    return res.status(400).json({ msg: error.message });
+  }
+};
 
+const nuevoPassword = async (req, res) => {
+  // console.log("asd");
+  const { token } = req.params;
+  const { password } = req.body;
+  const veterinario = await Veterinario.findOne({ token });
+  if (!veterinario) {
+    const error = new Error("Token no válido 🧩");
+    return res.status(400).json({ msg: error.message });
+  }
+
+  try {
+    veterinario.token = null;
+    veterinario.password = password;
+    await veterinario.save();
+    res.json({ msg: "Password actualizado correctamente 🥳" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  autenticar,
+  comprobarToken,
+  confirmar,
+  nuevoPassword,
+  olvidePassword,
+  perfil,
+  registrar,
+};
