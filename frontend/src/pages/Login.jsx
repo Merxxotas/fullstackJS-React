@@ -5,12 +5,12 @@ const Login = () => {
   return (
     <>
       <div>
-        <h1 className="text-indigo-600 font-black text-6xl">
+        <h1 className="text-red-500 font-black text-6xl">
           Inicia sesión, y administra tus{" "}
-          <span className="text-black">Pacientes</span> de veterinaria
+          <span className="text-blue-700">Pacientes</span> de veterinaria
         </h1>
       </div>
-      <div>
+      <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
         <form>
           <div className="my-5">
             <label className="uppercase text-gray-600 block text-xl font-bold">
@@ -40,14 +40,23 @@ const Login = () => {
           <input
             type="submit"
             value="Iniciar sesión"
-            className="bg-indigo-500 w-full hover:bg-indigo-600 p-3 px-10
+            className="bg-rose-500 w-full hover:bg-rose-900 p-3 px-10
              text-white uppercase font-bold rounded-xl 
              hover:cursor-pointer transition duration-300 ease-in-out md:w-auto"
           />
         </form>
-        <nav>
-          <Link to="/registrar-cuenta">
+        <nav className="mt-10 lg:flex lg:justify-between text-red-600 font-bold">
+          <Link
+            className="block text-center my-5 text-slate-500"
+            to="/registrar-cuenta"
+          >
             ¿No tienes una cuenta? Regístrate aquí
+          </Link>
+          <Link
+            className="block text-center my-5 text-slate-500"
+            to="/olvide-password"
+          >
+            Olvidé mi contraseña (password)
           </Link>
         </nav>
       </div>
