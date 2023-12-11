@@ -3,7 +3,9 @@ import React from "react";
 const OlvidePassword = () => {
   return (
     <>
-      <h3>Desde: OlvidePassword!!!!</h3>
+      <div>Prueba1</div>
+      <div>Prueba2</div>
+      <div>Prueba3</div>
     </>
   );
 };
