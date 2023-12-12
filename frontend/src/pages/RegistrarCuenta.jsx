@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Alerta from "../components/Alerta";
@@ -8,7 +9,7 @@ const RegistrarCuenta = () => {
   const [repetirPassword, setRepetirPassword] = useState("");
   const [alerta, setAlerta] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if ([nombre, email, password, repetirPassword].includes("")) {
       setAlerta({ msg: "Hay campos vacíos", error: true });
@@ -27,7 +28,25 @@ const RegistrarCuenta = () => {
       });
       return;
     }
+    // console.log("Todo correcto, y yo que me alegro...");
+    setAlerta({});
+
+    //aqui creo el usuario en la api que estoy consumiendo
+    try {
+      const url = "http://localhost:4000/api/veterinarios";
+      await axios.post(url, { nombre, email, password });
+      setAlerta({
+        msg: "El usuario se creó correctamente, revise su email",
+        error: false,
+      });
+      console.log(respuesta);
+    } catch (error) {
+      // console.log(error.response);
+      setAlerta({ msg: error.response.data.msg, error: true });
+    }
   };
+
+  const { msg } = alerta;
 
   return (
     <>
@@ -39,7 +58,7 @@ const RegistrarCuenta = () => {
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-        <Alerta alerta={alerta} />
+        {msg && <Alerta alerta={alerta} />}
         <form onSubmit={handleSubmit}>
           <div className="my-5">
             <label className="uppercase text-gray-600 block text-xl font-bold">
