@@ -12,26 +12,84 @@ const RegistrarCuenta = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if ([nombre, email, password, repetirPassword].includes("")) {
-      setAlerta({ msg: "Hay campos vacíos", error: true });
+      setAlerta({
+        msg: "Hay campos vacíos",
+        error: true,
+      });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
       return;
     }
 
     if (password !== repetirPassword) {
-      setAlerta({ msg: "Las contraseñas no coinciden", error: true });
+      setAlerta({
+        msg: "Las contraseñas no coinciden",
+        error: true,
+      });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
       return;
     }
 
     if (password.length < 8) {
+      // Mostrar la alerta
       setAlerta({
         msg: "La contraseña debe tener al menos 8 caracteres",
         error: true,
       });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
       return;
     }
+
+    // Validar si la contraseña tiene algún número
+    if (!/\d/.test(password)) {
+      setAlerta({
+        msg: "La contraseña debe contener al menos un número",
+        error: true,
+      });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
+      return;
+    }
+
+    // Validar si la contraseña tiene alguna letra mayúscula
+    if (!/[A-Z]/.test(password)) {
+      setAlerta({
+        msg: "La contraseña debe contener al menos una letra mayúscula",
+        error: true,
+      });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
+      return;
+    }
+
+    // Validar si la contraseña tiene algún carácter especial
+    if (!/[!@#$%^&*()]/.test(password)) {
+      setAlerta({
+        msg: "La contraseña debe contener al menos un carácter especial",
+        error: true,
+      });
+      // Esperar 3 segundos y ocultar la alerta
+      setTimeout(function () {
+        setAlerta({}); // Cambiar el estado de la alerta a vacío
+      }, 3000);
+      return;
+    }
+
     // console.log("Todo correcto, y yo que me alegro...");
     setAlerta({});
 
-    //aqui creo el usuario en la api que estoy consumiendo
     try {
       const url = "http://localhost:4000/api/veterinarios";
       await axios.post(url, { nombre, email, password });
@@ -39,10 +97,23 @@ const RegistrarCuenta = () => {
         msg: "El usuario se creó correctamente, revise su email",
         error: false,
       });
-      console.log(respuesta);
+
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
     } catch (error) {
-      // console.log(error.response);
-      setAlerta({ msg: error.response.data.msg, error: true });
+      if (error.response && error.response.data) {
+        setAlerta({ msg: error.response.data.msg, error: true });
+      } else {
+        setAlerta({
+          msg: "Un error inesperado ha ocurrido, lo sentimos",
+          error: true,
+        });
+      }
+
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
     }
   };
 
