@@ -35,7 +35,7 @@ const confirmar = async (req, res) => {
   const usuarioConfirmar = await Veterinario.findOne({ token });
   // console.log(usuarioConfirmar);
   if (!usuarioConfirmar) {
-    const error = new Error("USUARIO no válido");
+    const error = new Error("Usuario no válido");
     return res.status(404).json({ msg: error.message });
   }
 
