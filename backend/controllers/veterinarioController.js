@@ -1,9 +1,10 @@
+import emailRegistro from "../helpers/emailRegistro.js";
 import generarJWT from "../helpers/generarJWT.js";
 import generarId from "../helpers/generarid.js";
 import Veterinario from "../models/Veterinario.js";
 const registrar = async (req, res) => {
   // console.log(req.body);
-  const { email } = req.body;
+  const { email, nombre } = req.body;
   //prevenir si un usuario ya se encuentra duplicado
   const existeUsuario = await Veterinario.findOne({ email });
   if (existeUsuario) {
@@ -13,6 +14,8 @@ const registrar = async (req, res) => {
   try {
     const veterinario = new Veterinario(req.body);
     const veterinarioGuardado = await veterinario.save();
+    //Enviar email
+    emailRegistro({ email, nombre, token: veterinarioGuardado.token });
     res.json(veterinarioGuardado);
   } catch (error) {
     console.log(error);

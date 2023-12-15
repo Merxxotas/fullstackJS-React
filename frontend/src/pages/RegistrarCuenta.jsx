@@ -123,9 +123,8 @@ const RegistrarCuenta = () => {
     <>
       <div>
         <h1 className="text-red-500 font-black text-5xl">
-          Por favor, ingresa tu{" "}
-          <span className="text-blue-700">correo electrónico</span> asociado a
-          la cuenta
+          ¡Crea tu <span className="text-blue-700">cuenta de veterinarios</span>{" "}
+          para atender a tus pacientes!
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
